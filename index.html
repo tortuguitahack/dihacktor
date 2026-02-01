@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORANGE ALERT | 1M SALES PROTOCOL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;700;900&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --neon-green: #00ff41;
+            --neon-red: #ff0033;
+            --neon-cyan: #0ff0fc;
+            --bg-black: #050505;
+            --card-bg: #0a0a0a;
+            --text-main: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background-color: var(--bg-black);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* GLITCH EFFECT */
+        .glitch {
+            position: relative;
+            color: white;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -1px 0 red;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -1px 0 blue;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% {
+                clip: rect(3px, 9999px, 33px, 0);
+            }
+
+            100% {
+                clip: rect(61px, 9999px, 76px, 0);
+            }
+        }
+
+        @keyframes glitch-anim2 {
+            0% {
+                clip: rect(22px, 9999px, 11px, 0);
+            }
+
+            100% {
+                clip: rect(78px, 9999px, 94px, 0);
+            }
+        }
+
+        /* SCANLINE */
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 999;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 255, 65, 0.1) 50%, rgba(0, 0, 0, 0) 100%);
+            opacity: 0.1;
+            position: fixed;
+            bottom: 100%;
+            animation: scanline 10s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scanline {
+            0% {
+                bottom: 100%;
+            }
+
+            100% {
+                bottom: -100%;
+            }
+        }
+
+        /* CARDS */
+        .cyber-card {
+            border: 1px solid #333;
+            background: #0a0a0a;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cyber-card:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(15, 240, 252, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .cyber-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+            transform: rotate(45deg);
+            animation: shine 6s infinite;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .terminal-modal {
+            background: #000;
+            border: 2px solid var(--neon-green);
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* UTILS */
+        .btn-neon {
+            background: transparent;
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            padding: 10px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-neon:hover {
+            background: var(--neon-green);
+            color: black;
+            box-shadow: 0 0 20px var(--neon-green);
+        }
+
+        .btn-search {
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+
+        .btn-search:hover {
+            background: var(--neon-cyan);
+            color: black;
+            box-shadow: 0 0 20px var(--neon-cyan);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="text-gray-300">
+
+    <div class="scanline"></div>
+
+    <!-- HEADER / STATS -->
+    <header class="border-b border-gray-800 p-6 sticky top-0 bg-black/90 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 border-2 border-green-500 rounded-full flex items-center justify-center animate-pulse">
+                    ⚡</div>
+                <div>
+                    <h1 class="text-2xl font-bold text-white tracking-widest glitch" data-text="INVENTARIO MAESTRO">
+                        INVENTARIO MAESTRO</h1>
+                    <p class="text-xs text-green-500">SYSTEM STATUS: OPTIMAL</p>
+                </div>
+            </div>
+
+            <div class="flex gap-6 text-sm">
+                <div class="text-center">
+                    <p class="text-gray-500">DEPLOYED UNITS</p>
+                    <p class="text-xl font-bold text-cyan-400">10,000 / 10,000</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-gray-500">SALES GOAL</p>
+                    <div class="flex items-center gap-2">
+                        <p class="text-xl font-bold text-red-500">1,000,000</p>
+                        <span class="animate-ping w-2 h-2 bg-red-500 rounded-full"></span>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <p class="text-gray-500">TIME REMAINING</p>
+                    <p id="timer" class="text-xl font-bold text-red-500 font-mono">01:59:52</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- SEARCH & FILTERS -->
+    <div class="max-w-7xl mx-auto p-6 border-b border-gray-800">
+        <div class="flex flex-col md:flex-row gap-4">
+            <input type="text" id="searchInput" placeholder="> SEARCH DATABASE..."
+                class="flex-1 bg-black border border-gray-700 p-4 text-cyan-400 focus:outline-none focus:border-cyan-400 font-mono">
+            <select id="categoryFilter"
+                class="bg-black border border-gray-700 p-4 text-white font-mono focus:border-cyan-400">
+                <option value="ALL">ALL SECTORS</option>
+                <option value="Crypto Trading">CRYPTO TRADING</option>
+                <option value="SaaS">SAAS / DEVOPS</option>
+                <option value="Digital Marketing">DIGITAL MARKETING</option>
+                <option value="Fitness Tech">FITNESS TECH</option>
+                <option value="AI Scaling">AI SCALING</option>
+            </select>
+        </div>
+
+        <!-- Social Share -->
+        <div class="flex gap-2 mt-4 justify-end">
+            <button onclick="share('x')" class="text-xs border border-gray-700 px-3 py-1 hover:bg-gray-800">SHARE
+                PROTOCOL (X)</button>
+            <button onclick="share('wa')" class="text-xs border border-gray-700 px-3 py-1 hover:bg-gray-800">ENCRYPTED
+                COMMS (WA)</button>
+            <button onclick="share('tg')" class="text-xs border border-gray-700 px-3 py-1 hover:bg-gray-800">SIGNAL
+                GROUP (TG)</button>
+        </div>
+    </div>
+
+    <!-- INFINITE GRID -->
+    <div class="max-w-7xl mx-auto p-6 min-h-screen">
+        <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Products Loaded Here -->
+        </div>
+        <div id="loading" class="text-center py-10 hidden">
+            <span class="text-green-500 animate-pulse">> LOADING NEURAL DATA...</span>
+        </div>
+    </div>
+
+    <!-- TERMINAL MODAL -->
+    <div id="paymentModal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="terminal-modal">
+            <div class="flex justify-between items-center mb-6 border-b border-gray-800 pb-2">
+                <h2 class="text-xl text-green-500">> CHECKOUT_PROTOCOL_V4</h2>
+                <button onclick="closeModal(true)" class="text-red-500 hover:text-red-400">X</button>
+            </div>
+
+            <div class="mb-4 text-xs text-gray-500 font-mono">
+                > INITIALIZING PAYMENT GATEWAY...<br>
+                > ENCRYPTING CONNECTION... <span class="text-green-500">DONE</span><br>
+                > SKU: <span id="modalSku" class="text-white">...</span>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Stripe -->
+                <div class="border border-gray-700 p-4 hover:border-purple-500 cursor-pointer group"
+                    onclick="payStripe()">
+                    <div class="flex justify-between items-center">
+                        <span class="text-purple-400 font-bold group-hover:text-purple-300">CREDIT CARD / APPLE
+                            PAY</span>
+                        <span class="text-xs text-gray-500">INSTANT ACCESS</span>
+                    </div>
+                </div>
+
+                <!-- Crypto -->
+                <div class="border border-gray-700 p-4">
+                    <p class="text-cyan-400 font-bold mb-2">USDT / USDC (10% OFF)</p>
+                    <div class="bg-gray-900 p-2 text-xs break-all cursor-pointer hover:text-white"
+                        onclick="copy('0xeBe965EFe1ab53d2da915134d72e5BdBd5E3C053')">
+                        0xeBe965EFe1ab53d2da915134d72e5BdBd5E3C053
+                    </div>
+                </div>
+
+                <!-- Crypto -->
+                <div class="border border-gray-700 p-4">
+                    <p class="text-orange-400 font-bold mb-2">BITCOIN</p>
+                    <div class="bg-gray-900 p-2 text-xs break-all cursor-pointer hover:text-white"
+                        onclick="copy('bc1qjjgsx3lwa0wz59l89htcpr28j5s7dtmv99fmw0')">
+                        bc1qjjgsx3lwa0wz59l89htcpr28j5s7dtmv99fmw0
+                    </div>
+                </div>
+
+                <!-- Bank -->
+                <div class="border border-gray-700 p-4">
+                    <p class="text-green-500 font-bold mb-2">BANK WIRE (USA)</p>
+                    <div class="text-xs text-gray-400">
+                        ROUTING: 101019644<br>
+                        ACCOUNT: 219449048779<br>
+                        BANK: LEAD BANK
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 text-center text-xs text-gray-600 flex items-center justify-center gap-2">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                SECURE CONNECTION ACTIVE
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center py-10 text-gray-600 text-xs border-t border-gray-900 mt-10">
+        SYSTEM ID: ORANGE-ALERT-PROTOCOL_77<br>
+        COPYRIGHT © 2026 ELITE ECOSYSTEM
+    </footer>
+
+    <script>
+        // CONFIG
+        const STRIPE_LINKS = [
+            "https://buy.stripe.com/5kQ00j2LRdDs8aLfgM9Ve0c",
+            "https://buy.stripe.com/4gM14n5Y3eHw2Qr1pW9Ve0b",
+            "https://buy.stripe.com/4gMcN5bin1UK62D4C89Ve0a"
+        ];
+
+        // STATE
+        let allProducts = [];
+        let displayedProducts = [];
+        let itemsToShow = 24;
+        let page = 1;
+
+        // INIT
+        async function init() {
+            const res = await fetch('products.json');
+            allProducts = await res.json();
+
+            // Randomize for "Freshness"
+            allProducts.sort(() => Math.random() - 0.5);
+
+            filterAndRender();
+
+            // Search Listener
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                filterAndRender(e.target.value, document.getElementById('categoryFilter').value);
+            });
+
+            // Filter Listener
+            document.getElementById('categoryFilter').addEventListener('change', (e) => {
+                filterAndRender(document.getElementById('searchInput').value, e.target.value);
+            });
+
+            // Infinite Scroll
+            window.addEventListener('scroll', () => {
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+                    loadMore();
+                }
+            });
+        }
+
+        function filterAndRender(search = "", category = "ALL") {
+            const s = search.toLowerCase();
+            displayedProducts = allProducts.filter(p => {
+                const matchesSearch = p.title.toLowerCase().includes(s) || p.description.toLowerCase().includes(s);
+                const matchesCat = category === "ALL" || p.category === category;
+                return matchesSearch && matchesCat;
+            });
+
+            page = 1;
+            document.getElementById('productGrid').innerHTML = '';
+            renderBatch();
+        }
+
+        function loadMore() {
+            page++;
+            renderBatch();
+        }
+
+        function renderBatch() {
+            const start = (page - 1) * itemsToShow;
+            const end = start + itemsToShow;
+            const batch = displayedProducts.slice(start, end);
+
+            const container = document.getElementById('productGrid');
+
+            if (batch.length === 0) return;
+
+            batch.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'cyber-card p-4 relative group';
+                card.innerHTML = `
+                    <div class="absolute top-2 right-2 bg-green-500 text-black text-xs font-bold px-2 py-1 rounded badge">PREMIUM</div>
+                    <div class="text-xs text-gray-500 mb-2 font-mono uppercase">${p.category}</div>
+                    <h3 class="text-lg font-bold text-white mb-2 leading-tight group-hover:text-cyan-400 transition-colors">${p.title}</h3>
+                    <p class="text-sm text-gray-400 mb-4 h-12 overflow-hidden">${p.description}</p>
+                    
+                    <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-800">
+                        <div class="flex flex-col">
+                            <span class="text-xs text-gray-500 line-through">$${p.original_price}</span>
+                            <span class="text-xl font-bold text-neon-green text-green-400">$${p.price}</span>
+                        </div>
+                        <button onclick="openModal('${p.id}')" class="btn-neon text-xs">EJECUTAR</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // MODAL LOGIC
+        // MODAL LOGIC
+        function openModal(id) {
+            document.getElementById('paymentModal').style.display = 'flex';
+            document.getElementById('modalSku').innerText = id;
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(e) {
+            if (e === true || (e.target && e.target.id === 'paymentModal')) {
+                document.getElementById('paymentModal').style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function payStripe() {
+            const link = STRIPE_LINKS[Math.floor(Math.random() * STRIPE_LINKS.length)];
+            window.open(link, '_blank');
+        }
+
+        function copy(txt) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(txt).then(() => {
+                    alert('ADDRESS COPIED // ENCRYPTED CONNECTION SECURE');
+                }).catch(err => {
+                    prompt('COPY MANUALLY:', txt);
+                });
+            } else {
+                prompt('COPY MANUALLY:', txt);
+            }
+        }
+
+        function share(platform) {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent("⚠️ SYSTEM LEAK: Access the elite inventory before it closes. #OrangeAlert");
+            let link = "";
+
+            if (platform === 'x') link = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+            if (platform === 'wa') link = `https://wa.me/?text=${text}%20${url}`;
+            if (platform === 'tg') link = `https://t.me/share/url?url=${url}&text=${text}`;
+
+            window.open(link, '_blank');
+        }
+
+        // TIMER
+        let time = 7192; // Approx 2 hours
+        setInterval(() => {
+            time--;
+            const h = Math.floor(time / 3600).toString().padStart(2, '0');
+            const m = Math.floor((time % 3600) / 60).toString().padStart(2, '0');
+            const s = (time % 60).toString().padStart(2, '0');
+            document.getElementById('timer').innerText = `${h}:${m}:${s}`;
+        }, 1000);
+
+        init();
+    </script>
+</body>
+
+</html>
