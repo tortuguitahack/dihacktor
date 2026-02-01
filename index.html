@@ -327,11 +327,15 @@
     </footer>
 
     <script>
+
         // CONFIG
-        const STRIPE_LINKS = [
+        window.STRIPE_LINKS = [
             "https://buy.stripe.com/5kQ00j2LRdDs8aLfgM9Ve0c",
             "https://buy.stripe.com/4gM14n5Y3eHw2Qr1pW9Ve0b",
-            "https://buy.stripe.com/4gMcN5bin1UK62D4C89Ve0a"
+            "https://buy.stripe.com/4gMcN5bin1UK62D4C89Ve0a",
+            "https://buy.stripe.com/14A14nbin8j862D6Kg9Ve09",
+            "https://buy.stripe.com/eVqbJ1gCHdDsdv5fgM9Ve08",
+            "https://buy.stripe.com/bJe28rbinczo3Uv5Gc9Ve01"
         ];
 
         // STATE
@@ -470,7 +474,52 @@
             document.getElementById('timer').innerText = `${h}:${m}:${s}`;
         }, 1000);
 
-        init();
+        // FAILSAFE DATA (Hardcoded Top Items to ensure display)
+        const FALLBACK_PRODUCTS = [
+            { id: "Algorithmic_Trading_Consultant_2527.html", title: "Algorithmic Trading Master", description: "Elite crypto systems.", price: "9.99", original_price: "97.00", category: "Crypto Trading" },
+            { id: "Apollo_IA_Workflow_Premium_11.html", title: "Apollo IA Workflow #11", description: "Automated scaling systems.", price: "9.99", original_price: "97.00", category: "AI Scaling" },
+            { id: "GOD-373809_Advanced_Productivity.html", title: "GOD MODE: Productivity", description: "Biohacking for CEOs.", price: "9.99", original_price: "97.00", category: "Fitness Tech" },
+            { id: "Digital_Product_875_IA_Premium.html", title: "Digital Empire 875", description: "Full stack marketing kit.", price: "9.99", original_price: "97.00", category: "Digital Marketing" },
+            { id: "SaaS_Builder_Kit_2026.html", title: "SaaS Builder Kit 2026", description: "Launch in 24h.", price: "9.99", original_price: "97.00", category: "SaaS" },
+            { id: "Crypto_Sniper_Bot_V9.html", title: "Crypto Sniper Bot V9", description: "Mempool scanning.", price: "9.99", original_price: "97.00", category: "Crypto Trading" }
+        ];
+
+        // INIT
+        async function init() {
+            try {
+                const res = await fetch('products.json');
+                if (!res.ok) throw new Error("Fetch Failed");
+                allProducts = await res.json();
+            } catch (e) {
+                console.warn("Using Fallback Data due to:", e);
+                // Expand fallback to fill grid
+                allProducts = [...FALLBACK_PRODUCTS, ...FALLBACK_PRODUCTS, ...FALLBACK_PRODUCTS, ...FALLBACK_PRODUCTS];
+                document.getElementById('loading').innerText = "> USING OFFLINE EMERGENCY DATABASE";
+                document.getElementById('loading').style.display = 'block';
+            }
+
+            // Randomize
+            allProducts.sort(() => Math.random() - 0.5);
+
+            filterAndRender();
+
+            // Search Listener
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                filterAndRender(e.target.value, document.getElementById('categoryFilter').value);
+            });
+
+            // Filter Listener
+            document.getElementById('categoryFilter').addEventListener('change', (e) => {
+                filterAndRender(document.getElementById('searchInput').value, e.target.value);
+            });
+
+            // Infinite Scroll
+            window.addEventListener('scroll', () => {
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+                    loadMore();
+                }
+            });
+        }
     </script>
 </body>
 
